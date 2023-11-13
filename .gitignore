@@ -3,3 +3,5 @@ __pycache__
 .idea
 venv
 main.py
+fastapi_auth/mock_user
+src

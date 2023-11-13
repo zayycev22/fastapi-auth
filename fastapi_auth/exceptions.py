@@ -1,0 +1,6 @@
+class FastApiAuthException(Exception):
+    ...
+
+
+class UserAlreadyExists(FastApiAuthException):
+    ...
