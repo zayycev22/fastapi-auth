@@ -21,7 +21,8 @@ class AuthBackend(BaseBackend[user_model]):
         return None
 
     async def login(self, strategy: Strategy, user: user_model):
-        token = await strategy.write_token(user)
+        # todo Убрать создание токена -> получение токена и если его нет, то создать
+        token = await strategy.get_token(user)
         return await self.transport.get_login_data(token)
 
     async def logout(self, strategy: Strategy):

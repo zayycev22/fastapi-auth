@@ -16,7 +16,7 @@ class Strategy(ABC, Generic[user_model]):
     ) -> Optional[user_model]:
         raise NotImplementedError
 
-    async def write_token(self, user: user_model) -> str:
+    async def get_token(self, user: user_model) -> str:
         raise NotImplementedError
 
     async def destroy_token(self, token: str, user: user_model) -> None:

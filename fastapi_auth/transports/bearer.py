@@ -1,5 +1,3 @@
-from abc import ABC
-
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 
@@ -15,4 +13,4 @@ class BearerTransport:
         self.scheme = OAuth2PasswordBearer(path)
 
     async def get_login_data(self, token: str) -> BearerResponse:
-        return BearerResponse(token=token, token_type="bearer")
+        return BearerResponse(token=token, token_type="Bearer")

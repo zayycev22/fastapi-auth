@@ -5,3 +5,6 @@ venv
 main.py
 fastapi_auth/mock_user
 src
+env
+.env
+config.py
