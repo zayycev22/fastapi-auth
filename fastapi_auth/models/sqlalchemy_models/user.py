@@ -1,17 +1,15 @@
 import datetime
-from typing import Type, TYPE_CHECKING
+from typing import Type, Generic
 from sqlalchemy import String, Boolean, DateTime, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Mapped, mapped_column, relationship, declared_attr
+from sqlalchemy.orm import Mapped, mapped_column
 from typing_extensions import Optional
-
-from fastapi_auth.models import token_model
-from fastapi_auth.models.user import AbstractUser
+from fastapi_auth.models.user import AbstractBaseUser
 from fastapi_auth.repositories.base import BaseUserRepository, BaseTokenRepository
 from sqlalchemy import or_
 
 
-class BaseUser(AbstractUser):
+class BaseUser(AbstractBaseUser):
     __tablename__ = "user"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -19,10 +17,6 @@ class BaseUser(AbstractUser):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False)
     time_created: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-
-    @declared_attr
-    def token(cls) -> Mapped[token_model]:
-        return relationship(back_populates="user")
 
     USERNAME_FIELD = ""
 
@@ -34,12 +28,12 @@ class BaseUser(AbstractUser):
 
 
 class User(BaseUser):
-    username: Mapped[str] = mapped_column(String(128), nullable=False)
+    username: Mapped[str] = mapped_column(String(128), nullable=False, unique=True)
     USERNAME_FIELD = "username"
 
 
 class EmailUser(BaseUser):
-    email: Mapped[str] = mapped_column(String(128), nullable=False)
+    email: Mapped[str] = mapped_column(String(128), nullable=False, unique=True)
 
     USERNAME_FIELD = "email"
 
@@ -59,15 +53,17 @@ class UserRepository(BaseUserRepository[BaseUser]):
         password = kwargs.pop('password', None)
         user = self.user_model(**kwargs)
         if password is not None:
-            user.set_password(kwargs.get(password))
+            user.set_password(password)
         else:
             user.set_unusable_password()
+        self.session.add(user)
         await user.save(session=self.session)
-        await self.token_repo.create(user=user)
+        await self._token_repo.create(user_id=user.id)
         await self.session.refresh(user)
         return user
 
     async def get_by_natural_key(self, natural_key: str) -> Optional[BaseUser]:
-        query = select(self.user_model).filter(or_(**{self.user_model.USERNAME_FIELD: natural_key}))
+        key = self.user_model.USERNAME_FIELD
+        query = select(self.user_model).where(getattr(self.user_model, key) == natural_key)
         result = await self.session.execute(query)
         return result.scalar_one_or_none()

@@ -1,7 +1,14 @@
 import secrets
 from typing import Union
-
+import warnings
 from passlib.context import CryptContext
+
+try:
+    from settings import SECRET_KEY
+except ImportError:
+    raise ImportError("Couldn't import SECRET_KEY from settings.py")
+
+warnings.simplefilter('ignore')
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -13,12 +20,15 @@ UNUSABLE_PASSWORD_SUFFIX_LENGTH = (
 
 
 class Hasher:
-    @staticmethod
-    def get_password_hash(plain_password: Union[str, bytes]):
-        return pwd_context.hash(plain_password)
 
     @staticmethod
-    def verify_password(plain_password: Union[str, bytes], hashed_password: Union[str, bytes]) -> bool:
+    def get_password_hash(plain_password: Union[str, bytes]):
+        return pwd_context.hash(plain_password, salt=SECRET_KEY)
+
+    @staticmethod
+    def verify_password(plain_password: Union[str, bytes, None], hashed_password: Union[str, bytes]) -> bool:
+        if plain_password is None:
+            return False
         return pwd_context.verify(plain_password, hashed_password)
 
     @staticmethod

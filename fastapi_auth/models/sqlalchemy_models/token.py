@@ -1,12 +1,10 @@
 import datetime
-from typing import Type, Optional, TYPE_CHECKING
+from typing import Type, Optional
 from sqlalchemy import DateTime, func, ForeignKey, String, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Mapped, mapped_column, relationship, declared_attr
-
-from fastapi_auth.models import user_model
-from fastapi_auth.models.token import AbstractToken
-from fastapi_auth.repositories.base import BaseTokenRepository
+from sqlalchemy.orm import Mapped, mapped_column, declared_attr
+from fastapi_auth.models import AbstractToken
+from fastapi_auth.repositories import BaseTokenRepository
 
 
 class Token(AbstractToken):
@@ -20,14 +18,13 @@ class Token(AbstractToken):
     def user_id(cls) -> Mapped[int]:
         return mapped_column(ForeignKey('user.id'), nullable=False)
 
-    @declared_attr
-    def user(cls) -> Mapped[user_model]:
-        return relationship(back_populates="token", cascade="all, delete-orphan")
-
     async def save(self, **kwargs):
         session: AsyncSession = kwargs.get('session')
+        if not session:
+            raise ValueError("Session cannot be None")
         if not self.key:
             self.key = self.generate_key()
+        session.add(self)
         return await session.commit()
 
 
@@ -36,8 +33,9 @@ class TokenRepository(BaseTokenRepository[Token]):
         self.session = session
         super().__init__(tm)
 
-    async def create(self, **kwargs: dict) -> Token:
-        token = self.token_model(**kwargs)
+    async def create(self, user_id: int) -> Token:
+        token = self.token_model(user_id=user_id)
+        self.session.add(token)
         await token.save(session=self.session)
         return token
 

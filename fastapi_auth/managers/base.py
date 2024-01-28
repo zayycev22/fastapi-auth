@@ -1,20 +1,18 @@
 from abc import ABC, abstractmethod
 from typing import Generic, Optional
-
 import unicodedata
-
 from fastapi_auth.hasher import Hasher
 from fastapi_auth.models import user_model
-from fastapi_auth.repositories.base import BaseUserRepository
+from fastapi_auth.repositories.base import user_repository
 
 
-class BaseUserManager(ABC, Generic[user_model]):
-    def __init__(self, repo: BaseUserRepository[user_model]):
-        self.repo = repo
-        self.hasher = Hasher()
+class BaseUserManager(ABC, Generic[user_model, user_repository]):
+    def __init__(self, repo: user_repository):
+        self._user_repo = repo
+        self._hasher = Hasher()
 
     @abstractmethod
-    async def on_user_created(self, user: user_model):
+    async def on_user_created(self, user: user_model) -> None:
         raise NotImplementedError
 
     @classmethod
@@ -26,13 +24,13 @@ class BaseUserManager(ABC, Generic[user_model]):
         )
 
     async def get(self, **kwargs) -> Optional[user_model]:
-        user = await self.repo.get(**kwargs)
+        user = await self._user_repo.get(**kwargs)
         return user
 
     async def _create_user(self, **kwargs) -> user_model:
-        if self.repo.user_model.USERNAME_FIELD not in kwargs:
+        if self._user_repo.user_model.USERNAME_FIELD not in kwargs:
             raise ValueError("The given username must be set")
-        user = await self.repo.create(**kwargs)
+        user = await self._user_repo.create(**kwargs)
         return user
 
     async def create_user(self, **kwargs) -> user_model:
@@ -47,6 +45,6 @@ class BaseUserManager(ABC, Generic[user_model]):
         await self.on_user_created(user)
         return user
 
-    async def get_by_natural_key(self, username: str) -> Optional[user_model]:
-        user = await self.repo.get_by_natural_key(username)
+    async def get_by_natural_key(self, natural_key: str) -> Optional[user_model]:
+        user = await self._user_repo.get_by_natural_key(natural_key)
         return user

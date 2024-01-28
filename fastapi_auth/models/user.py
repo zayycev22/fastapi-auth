@@ -1,17 +1,16 @@
-from abc import ABCMeta
 import datetime
-from typing import TypeVar, Optional, Protocol
+from typing import TypeVar, Optional
+
+from passlib.exc import UnknownHashError
 
 from fastapi_auth.hasher import Hasher
-from fastapi_auth.models.token import AbstractToken
 
 
-class AbstractUser:
+class AbstractBaseUser:
     id: int
     password: str
     is_active: bool
     is_superuser: bool
-    token: AbstractToken
     time_created: datetime.datetime
 
     USERNAME_FIELD: str
@@ -27,11 +26,14 @@ class AbstractUser:
     def natural_key(self) -> Optional[str]:
         return self.get_username()
 
-    def user_can_authenticate(self):
+    def user_can_authenticate(self) -> bool:
         return self.is_active
 
-    def check_password(self, raw_password: str):
-        return Hasher.verify_password(raw_password, self.password)
+    def check_password(self, raw_password: str) -> bool:
+        try:
+            return Hasher.verify_password(raw_password, self.password)
+        except UnknownHashError:
+            return False
 
     @classmethod
     def username_attribute(cls):
@@ -47,4 +49,4 @@ class AbstractUser:
         raise NotImplementedError
 
 
-user_model = TypeVar('user_model', bound=AbstractUser)
+user_model = TypeVar('user_model', bound=AbstractBaseUser)
