@@ -51,7 +51,7 @@ class UserRepository(BaseUserRepository[user_model]):
             user.set_password(password)
         else:
             user.set_unusable_password()
-        await user.save(session=self.session)
+        await user.save(session=self.session, created=True)
         return user
 
     async def get_by_natural_key(self, natural_key: str) -> Optional[user_model]:

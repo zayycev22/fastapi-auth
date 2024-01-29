@@ -6,7 +6,7 @@ from fastapi_auth.strategies.base import Strategy
 
 
 class DbStrategy(Strategy[user_model, token_model]):
-    def __init__(self, token_repo: BaseTokenRepository, user_repo: BaseUserRepository):
+    def __init__(self, user_repo: BaseUserRepository, token_repo: BaseTokenRepository):
         self._token_repo = token_repo
         self._user_repo = user_repo
 

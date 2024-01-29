@@ -39,19 +39,19 @@ class Signal:
 
         return wrapper
 
-    async def emit_before_create(self, instance: Any, **kwargs) -> None:
+    async def emit_before_create(self, instance: Any, created: bool = False, **kwargs) -> None:
         instance_type = type(instance)
         for signal in self._signals:
             if instance_type in signal._before_create:
                 for receiver in signal._before_create[instance_type]:
-                    await receiver(instance, **prepare_kwargs(receiver, kwargs))
+                    await receiver(instance, created, **prepare_kwargs(receiver, kwargs))
 
-    async def emit_after_create(self, instance: Any, **kwargs) -> None:
+    async def emit_after_create(self, instance: Any, created: bool = False, **kwargs) -> None:
         instance_type = type(instance)
         for signal in self._signals:
             if instance_type in signal._after_create:
                 for receiver in signal._after_create[instance_type]:
-                    await receiver(instance, **prepare_kwargs(receiver, kwargs))
+                    await receiver(instance, created, **prepare_kwargs(receiver, kwargs))
 
 
 main_signal = Signal()

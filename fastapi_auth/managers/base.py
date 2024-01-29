@@ -1,12 +1,10 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import Generic, Optional
 import unicodedata
 from fastapi_auth.hasher import Hasher
 from fastapi_auth.models import user_model
 from fastapi_auth.repositories.base import user_repository
 from email_validator import validate_email, EmailNotValidError
-
-from fastapi_auth.types import DependencyCallable
 
 
 class BaseUserManager(ABC, Generic[user_model, user_repository]):
@@ -59,6 +57,3 @@ class BaseUserManager(ABC, Generic[user_model, user_repository]):
     async def get_by_natural_key(self, natural_key: str) -> Optional[user_model]:
         user = await self._user_repo.get_by_natural_key(natural_key)
         return user
-
-
-UserManagerDependency = DependencyCallable[BaseUserManager[user_model, user_repository]]

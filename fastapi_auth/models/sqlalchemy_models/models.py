@@ -44,12 +44,15 @@ class BaseUser(AbstractBaseUser):
 
     async def save(self, **kwargs) -> None:
         session: AsyncSession = kwargs.get('session')
+        created: bool = kwargs.get('created')
         if session is None:
             raise ValueError("Session cannot be None")
+        if created is None:
+            created = False
         session.add(self)
-        await main_signal.emit_before_create(instance=self, session=session)
+        await main_signal.emit_before_create(instance=self, created=created, session=session)
         await session.commit()
-        return await main_signal.emit_after_create(instance=self, session=session)
+        return await main_signal.emit_after_create(instance=self, created=created, session=session)
 
     async def delete(self, **kwargs) -> None:
         session: AsyncSession = kwargs.get('session')

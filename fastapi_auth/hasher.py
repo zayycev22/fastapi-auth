@@ -15,7 +15,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 UNUSABLE_PASSWORD_PREFIX = "!"
 RANDOM_STRING_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 UNUSABLE_PASSWORD_SUFFIX_LENGTH = (
-    40  # number of random chars to add after UNUSABLE_PASSWORD_PREFIX
+    22  # number of random chars to add after UNUSABLE_PASSWORD_PREFIX
 )
 
 
