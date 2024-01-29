@@ -19,6 +19,9 @@ class AbstractToken:
     async def save(self, **kwargs):
         raise NotImplementedError
 
+    async def delete(self, **kwargs):
+        raise NotImplementedError
+
     @classmethod
     def generate_key(cls):
         return binascii.hexlify(os.urandom(20)).decode()

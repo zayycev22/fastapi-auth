@@ -1,5 +1,4 @@
 import secrets
-
 from fastapi_auth.consts import CommandConsts
 
 
