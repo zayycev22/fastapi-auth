@@ -48,3 +48,4 @@ class BaseUserRepository(ABC, Generic[user_model]):
 
 
 user_repository = TypeVar('user_repository', bound=BaseUserRepository)
+token_repository = TypeVar('token_repository', bound=BaseTokenRepository)
