@@ -14,7 +14,7 @@ class Strategy(ABC, Generic[user_model, token_model]):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_token_by_user(self, user: user_model) -> Optional[token_model]:
+    async def get_token_by_user(self, user: user_model) -> str:
         raise NotImplementedError
 
     @abstractmethod

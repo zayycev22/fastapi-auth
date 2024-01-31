@@ -15,8 +15,9 @@ class Authenticator(Generic[user_model]):
 
     async def process_token(self, request: Request, token: Optional[str]) -> None:
         if token is None:
-            request.state.user = AnonymousUser()
-        user = await self._backend.get_by_token(token)
+            request.scope["user"] = AnonymousUser()
+            return
+        user = await self._backend.get_user_by_token(token)
         if user is None:
             raise HTTPException(status_code=401, detail="Invalid token")
-        request.state.user = user
+        request.scope["user"] = user

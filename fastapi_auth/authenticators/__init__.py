@@ -1,0 +1,1 @@
+from fastapi_auth.authenticators.base import Authenticator

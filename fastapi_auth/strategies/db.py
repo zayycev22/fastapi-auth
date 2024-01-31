@@ -17,9 +17,9 @@ class DbStrategy(Strategy[user_model, token_model]):
         user = await self._user_repo.get(id=access_token.user_id)
         return user
 
-    async def get_token_by_user(self, user: user_model) -> Optional[token_model]:
+    async def get_token_by_user(self, user: user_model) -> str:
         access_token = await self._token_repo.get_by_user_id(user_id=user.id)
-        return access_token
+        return access_token.key
 
     async def destroy_token(self, token: str, user: user_model) -> None:
         access_token = await self._token_repo.get_by_key(token)
