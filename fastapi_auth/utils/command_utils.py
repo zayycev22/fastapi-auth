@@ -26,7 +26,7 @@ def execute_from_line(args: list):
     if command == "--generate-key":
         if len(sub_commands) > 0:
             if sub_commands[0] == "--help":
-                print("Function will return secret key to be used as a SECRET_KEY setting value.")
+                print("Function will return secret key to be used as a SECRET_KEY settings.py value.")
             else:
                 raise ValueError(f"Unknown sub-commands {sub_commands}")
         else:

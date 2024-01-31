@@ -1,9 +1,7 @@
 import datetime
-
 from sqlalchemy import DateTime, func, String, Boolean, ForeignKey
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Mapped, mapped_column, declared_attr, backref
-
+from sqlalchemy.orm import Mapped, mapped_column, declared_attr
 from fastapi_auth.models import AbstractToken, AbstractBaseUser
 from fastapi_auth.signals.signal import main_signal
 

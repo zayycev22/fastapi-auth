@@ -1,9 +1,11 @@
 from typing import Type, Optional
 from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import IntegrityError
 
-from fastapi_auth.models import user_model, token_model
-from fastapi_auth.models.sqlalchemy_models.models import Token
+from fastapi_auth.exceptions import UserAlreadyExists
+from fastapi_auth.models import user_model
+from fastapi_auth.sqlalchemy_models.models import Token
 from fastapi_auth.repositories import BaseTokenRepository, BaseUserRepository
 
 
@@ -51,7 +53,10 @@ class UserRepository(BaseUserRepository[user_model]):
             user.set_password(password)
         else:
             user.set_unusable_password()
-        await user.save(session=self.session, created=True)
+        try:
+            await user.save(session=self.session, created=True)
+        except IntegrityError:
+            raise UserAlreadyExists
         return user
 
     async def get_by_natural_key(self, natural_key: str) -> Optional[user_model]:
