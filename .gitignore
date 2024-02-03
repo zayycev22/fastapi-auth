@@ -8,3 +8,4 @@ src
 env
 .env
 settings.py
+tst.py
