@@ -8,4 +8,5 @@ src
 env
 .env
 settings.py
+rq_test.py
 tst.py
