@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Type, Union
+from typing import List, Type, Union, TypeVar
 from pydantic import BaseModel, create_model, ConfigDict
 
 
@@ -10,7 +10,6 @@ class BaseSerializer(ABC):
 
     @classmethod
     def model(cls, many: bool = False) -> Union[Type[BaseModel], Type[List[Type[BaseModel]]]]:
-
         annotations = cls.__annotations__
         dynamic_model_fields = {}
         for field_name, field_type in annotations.items():
@@ -40,3 +39,6 @@ class BaseSerializer(ABC):
     @abstractmethod
     async def _parse_many_instances(self, instances: List[object]) -> List[dict]:
         raise NotImplementedError
+
+
+base_serializer = TypeVar("base_serializer", bound=BaseSerializer)
