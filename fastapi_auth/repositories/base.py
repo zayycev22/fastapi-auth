@@ -10,7 +10,7 @@ class BaseTokenRepository(ABC, Generic[token_model]):
         self.token_type = token_type
 
     @abstractmethod
-    async def create(self, user_id: int) -> token_model:
+    async def create(self, user: user_model) -> token_model:
         raise NotImplementedError
 
     @abstractmethod
@@ -22,7 +22,7 @@ class BaseTokenRepository(ABC, Generic[token_model]):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_by_user_id(self, user_id: int) -> Optional[token_model]:
+    async def get_by_user(self, user: user_model) -> Optional[token_model]:
         raise NotImplementedError
 
 

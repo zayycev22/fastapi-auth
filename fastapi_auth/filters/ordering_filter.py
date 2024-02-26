@@ -1,8 +1,6 @@
-from typing import List, Any, Type, Optional
-
+from typing import Sequence, Any, Type, Optional
 from pydantic import BaseModel, Field, create_model
 from starlette.requests import Request
-
 from fastapi_auth.filters.base import BaseFilterBackend
 
 
@@ -13,7 +11,7 @@ class OrderingFilter(BaseFilterBackend):
     def __init__(self, *ordering_fields):
         self.ordering_fields = ordering_fields
 
-    def filter_queryset(self, request: Request, data: List[Any]) -> List[Any]:
+    def filter_queryset(self, request: Request, data: Sequence[Any]) -> Sequence[Any]:
         if len(data) == 0:
             return data
         param = request.query_params.get(self.order_query_param)
@@ -30,7 +28,7 @@ class OrderingFilter(BaseFilterBackend):
             new_param = new_param[1:]
         return new_param
 
-    def _order_queryset(self, param: str, data: List[Any]) -> List[Any]:
+    def _order_queryset(self, param: str, data: Sequence[Any]) -> Sequence[Any]:
         if not hasattr(data[0], self._prepare_param(param)):
             raise ValueError(f"Invalid parameter {param}")
         if param.startswith("-"):

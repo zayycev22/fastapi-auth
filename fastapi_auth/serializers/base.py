@@ -9,7 +9,7 @@ class BaseSerializer(ABC):
         self._many = many
 
     @classmethod
-    def model(cls, many: bool = False) -> Union[Type[BaseModel], Type[List[Type[BaseModel]]]]:
+    def response_schema(cls, many: bool = False) -> Union[Type[BaseModel], Type[List[Type[BaseModel]]]]:
         annotations = cls.__annotations__
         dynamic_model_fields = {}
         for field_name, field_type in annotations.items():

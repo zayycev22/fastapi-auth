@@ -62,11 +62,15 @@ class AbstractBaseUser:
     def set_password(self, raw_password: str) -> None:
         self.password = Hasher.make_password(raw_password)
 
-    async def save(self, **kwargs):
+    async def save(self, save: bool = False, **kwargs):
         raise NotImplementedError(f"FastApiAuth doesn't provide a DB representation for {self.__class__.__name__}.")
 
     async def delete(self, **kwargs):
         raise NotImplementedError(f"FastApiAuth doesn't provide a DB representation for {self.__class__.__name__}.")
+
+    @classmethod
+    async def create(cls, **kwargs):
+        raise NotImplementedError(f"FastApiAuth doesn't provide a DB representation for {cls.__class__.__name__}.")
 
 
 class AnonymousUser(AbstractBaseUser):

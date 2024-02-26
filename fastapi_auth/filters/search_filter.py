@@ -1,8 +1,6 @@
-from typing import List, Set, Type, Optional
-
+from typing import Set, Type, Optional, Sequence
 from pydantic import BaseModel, Field, create_model
 from starlette.requests import Request
-
 from fastapi_auth.filters.base import BaseFilterBackend
 
 
@@ -12,7 +10,7 @@ class SearchFilter(BaseFilterBackend):
     def __init__(self, *search_fields: str):
         self.search_fields = search_fields
 
-    def filter_queryset(self, request: Request, data: List[object]):
+    def filter_queryset(self, request: Request, data: Sequence[object]) -> Sequence[object]:
         param = request.query_params.get(self.search_param)
         queryset = set()
         if param is not None:
