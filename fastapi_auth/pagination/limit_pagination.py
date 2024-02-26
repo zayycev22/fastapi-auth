@@ -45,7 +45,7 @@ class LimitOffsetPagination(BasePagination):
                 default=f"'http://api.example.org/accounts/?{cls.offset_query_param}=400&{cls.limit_query_param}=100'")),
             'previous': (Optional[str], Field(
                 default=f"'http://api.example.org/accounts/?{cls.offset_query_param}=200&{cls.limit_query_param}=100'")),
-            'results': (user_schema.model(many=True), ...)
+            'results': (user_schema.response_schema(many=True), ...)
         }
         return create_model(f"{user_schema.__name__.split(".")[-1]}Pagination", **pagination_schema,
                             model_config=ConfigDict(arbitrary_types_allowed=True))
