@@ -50,7 +50,7 @@ class PageNumberPagination(BasePagination):
                 default=f"'http://api.example.org/accounts/?{cls.page_query_param}=4'")),
             'previous': (Optional[str], Field(
                 default=f"'http://api.example.org/accounts/?{cls.page_query_param}=2'")),
-            'results': (user_schema.model(many=True), ...)
+            'results': (user_schema.response_schema(many=True), ...)
         }
         return create_model(f"{user_schema.__name__.split(".")[-1]}Pagination", **pagination_schema,
                             model_config=ConfigDict(arbitrary_types_allowed=True))
