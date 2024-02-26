@@ -1,4 +1,6 @@
 import datetime
+from typing import Any
+
 from sqlalchemy import DateTime, func, String, Boolean, ForeignKey
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column, declared_attr
@@ -17,16 +19,25 @@ class Token(AbstractToken):
     def user_id(cls) -> Mapped[int]:
         return mapped_column(ForeignKey('user.id', ondelete="cascade"), nullable=False)
 
-    async def save(self, **kwargs) -> None:
+    async def save(self, created: bool = False, **kwargs) -> None:
         session: AsyncSession = kwargs.get('session')
         if not session:
             raise ValueError("Session cannot be None")
         if not self.key:
             self.key = self.generate_key()
         session.add(self)
-        await main_signal.emit_before_create(instance=self, session=session)
+        await session.flush()
         await session.commit()
-        return await main_signal.emit_after_create(instance=self, session=session)
+        return await main_signal.emit_after_save(instance=self, created=created, session=session)
+
+    @classmethod
+    async def create(cls, **kwargs: Any) -> object:
+        session: AsyncSession = kwargs.pop('session')
+        if session is None:
+            raise ValueError("Session cannot be None")
+        instance = cls(**kwargs)
+        await instance.save(created=True, session=session)
+        return instance
 
 
 class BaseUser(AbstractBaseUser):
@@ -40,17 +51,14 @@ class BaseUser(AbstractBaseUser):
 
     USERNAME_FIELD = ""
 
-    async def save(self, **kwargs) -> None:
+    async def save(self, created: bool = False, **kwargs) -> None:
         session: AsyncSession = kwargs.get('session')
-        created: bool = kwargs.get('created')
         if session is None:
             raise ValueError("Session cannot be None")
-        if created is None:
-            created = False
         session.add(self)
-        await main_signal.emit_before_create(instance=self, created=created, session=session)
+        await session.flush()
         await session.commit()
-        return await main_signal.emit_after_create(instance=self, created=created, session=session)
+        return await main_signal.emit_after_save(instance=self, created=created, session=session)
 
     async def delete(self, **kwargs) -> None:
         session: AsyncSession = kwargs.get('session')
@@ -58,6 +66,15 @@ class BaseUser(AbstractBaseUser):
             raise ValueError("Session cannot be None")
         await session.delete(self)
         await session.commit()
+
+    @classmethod
+    async def create(cls, **kwargs: Any) -> object:
+        session: AsyncSession = kwargs.pop('session')
+        if session is None:
+            raise ValueError("Session cannot be None")
+        instance = cls(**kwargs)
+        await instance.save(created=True)
+        return instance
 
 
 class User(BaseUser):

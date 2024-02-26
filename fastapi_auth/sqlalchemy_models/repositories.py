@@ -1,4 +1,4 @@
-from typing import Type, Optional
+from typing import Type, Optional, Generic
 from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
@@ -14,8 +14,8 @@ class TokenRepository(BaseTokenRepository[Token]):
         self.session = session
         super().__init__(tp)
 
-    async def create(self, user_id: int) -> Token:
-        token = self.token_type(user_id=user_id)
+    async def create(self, user: user_model) -> Token:
+        token = self.token_type(user_id=user.id)
         self.session.add(token)
         await token.save(session=self.session)
         return token
@@ -29,8 +29,8 @@ class TokenRepository(BaseTokenRepository[Token]):
         await self.session.delete(token)
         await self.session.commit()
 
-    async def get_by_user_id(self, user_id: int) -> Optional[Token]:
-        query = select(self.token_type).where(self.token_type.user_id == user_id)
+    async def get_by_user(self, user: user_model) -> Optional[Token]:
+        query = select(self.token_type).where(self.token_type.user_id == user.id)
         result = (await self.session.execute(query)).scalar_one_or_none()
         return result
 

@@ -16,7 +16,7 @@ class AbstractToken:
             raise TypeError(f"Cannot instantiate class {cls.__name__}")
         return super().__call__(*args, **kwargs)
 
-    async def save(self, **kwargs):
+    async def save(self, created: bool = False, **kwargs):
         raise NotImplementedError
 
     async def delete(self, **kwargs):

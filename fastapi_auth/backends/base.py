@@ -30,11 +30,3 @@ class BaseBackend(ABC, Generic[user_model, user_repository]):
 
     async def get_token_by_user(self, user: user_model) -> str:
         return await self.strategy.get_token_by_user(user)
-
-    """async def login(self, strategy: Strategy[user_model], user: user_model):
-        # todo Убрать создание токена -> получение токена и если его нет, то создать
-        token = await strategy.get_token(user)
-        return await self.transport.get_login_data(token)
-
-    async def logout(self, strategy: Strategy):
-        pass"""
