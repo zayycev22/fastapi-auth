@@ -4,8 +4,37 @@ from typing import Any
 from sqlalchemy import DateTime, func, String, Boolean, ForeignKey
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column, declared_attr
-from fastapi_auth.models import AbstractToken, AbstractBaseUser
+from fastapi_auth.models import AbstractToken, AbstractBaseUser, ExternalBaseModel
 from fastapi_auth.signals.signal import main_signal
+
+
+class ExModel(ExternalBaseModel):
+    __tablename__ = ""
+
+    async def save(self, created: bool = False, **kwargs) -> None:
+        session: AsyncSession = kwargs.get('session')
+        if not session:
+            raise ValueError("Session cannot be None")
+        session.add(self)
+        await session.flush()
+        await session.commit()
+        return await main_signal.emit_after_save(instance=self, created=created, session=session)
+
+    @classmethod
+    async def create(cls, **kwargs) -> object:
+        session: AsyncSession = kwargs.pop('session')
+        if session is None:
+            raise ValueError("Session cannot be None")
+        instance = cls(**kwargs)
+        await instance.save(created=True, session=session)
+        return instance
+
+    async def delete(self, **kwargs):
+        session: AsyncSession = kwargs.get('session')
+        if session is None:
+            raise ValueError("Session cannot be None")
+        await session.delete(self)
+        await session.commit()
 
 
 class Token(AbstractToken):
@@ -38,6 +67,13 @@ class Token(AbstractToken):
         instance = cls(**kwargs)
         await instance.save(created=True, session=session)
         return instance
+
+    async def delete(self, **kwargs):
+        session: AsyncSession = kwargs.get('session')
+        if session is None:
+            raise ValueError("Session cannot be None")
+        await session.delete(self)
+        await session.commit()
 
 
 class BaseUser(AbstractBaseUser):

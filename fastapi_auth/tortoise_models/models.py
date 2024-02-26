@@ -1,8 +1,25 @@
-from typing import Type, Optional, Any, Iterable
+from typing import Type, Optional, Any
 from tortoise.models import MODEL
-from fastapi_auth.models import AbstractToken, AbstractBaseUser
+from fastapi_auth.models import AbstractToken, AbstractBaseUser, ExternalBaseModel
 from tortoise import fields, Model, BaseDBAsyncClient
 from fastapi_auth.signals.signal import main_signal
+
+
+class ExModel(Model, ExternalBaseModel):
+
+    async def save(self, created: bool = False, **kwargs) -> None:
+        await super().save()
+        return await main_signal.emit_after_save(instance=self, created=created)
+
+    @classmethod
+    async def create(cls: Type[MODEL], using_db: Optional[BaseDBAsyncClient] = None, **kwargs: Any
+                     ) -> MODEL:
+        instance = await super().create()
+        await main_signal.emit_after_save(instance=instance, created=True)
+        return instance
+
+    class Meta:
+        abstract = True
 
 
 class BaseUser(Model, AbstractBaseUser):
