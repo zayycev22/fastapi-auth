@@ -1,8 +1,4 @@
-from typing import Generic, Union, Annotated, Optional
-from fastapi.security.api_key import APIKeyHeader
-from starlette.status import HTTP_403_FORBIDDEN
-from typing_extensions import Doc
-
+from typing import Generic, Optional
 from fastapi_auth.backends.base import BaseBackend
 from fastapi import Request, HTTPException
 from fastapi_auth.models import user_model, AnonymousUser
@@ -16,7 +12,7 @@ class Authenticator(Generic[user_model]):
         if token_prefix is not None:
             self.TOKEN_PREFIX = token_prefix
 
-    async def process_token(self, request: Request, raw_token: Optional[str]) -> None:
+    async def process_token(self, request: Request, raw_token: Optional[str] = None) -> None:
         if raw_token is None:
             request.scope["user"] = AnonymousUser()
             return

@@ -1,8 +1,7 @@
 import binascii
 import datetime
 import os
-from abc import ABCMeta
-from typing import TypeVar, Protocol
+from typing import TypeVar
 
 
 class AbstractToken:

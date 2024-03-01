@@ -1,5 +1,3 @@
-from typing import Optional
-
 from fastapi_auth.models import token_model, user_model, AnonymousUser
 from fastapi_auth.repositories import BaseTokenRepository, BaseUserRepository
 from fastapi_auth.strategies.base import Strategy

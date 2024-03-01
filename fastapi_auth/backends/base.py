@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Generic, Optional
 from fastapi_auth.hasher import Hasher
-from fastapi_auth.models import user_model, token_model
+from fastapi_auth.models import user_model
 from fastapi_auth.repositories.base import user_repository
 from fastapi_auth.strategies.base import Strategy
 

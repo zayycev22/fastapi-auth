@@ -1,6 +1,5 @@
 import inspect
 from typing import Union, List
-
 from fastapi_auth.exceptions import ValidationError
 from fastapi_auth.serializers.base import BaseSerializer
 

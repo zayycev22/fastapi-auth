@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from typing import Generic, Optional, Type, TypeVar
-
 from fastapi_auth.models import token_model
 from fastapi_auth.models.user import user_model
 

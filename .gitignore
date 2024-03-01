@@ -10,3 +10,4 @@ env
 settings.py
 rq_test.py
 tst.py
+fastapi_venv
