@@ -6,4 +6,5 @@ def main():
     execute_from_line(sys.argv)
 
 
-main()
+if __name__ == '__main__':
+    main()

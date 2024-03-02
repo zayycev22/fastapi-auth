@@ -1,9 +1,22 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-regex-commit"]
 build-backend = "hatchling.build"
 
+[tool.hatch]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.version]
+source = "regex_commit"
+commit_extra_args = ["-e"]
+path = "fastapi_auth/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["fastapi_auth/"]
+
 [project]
-name = "fastapi_auth"
+name = "auth_fastapi"
 dynamic = ['version']
 authors = [
     { name = "zayycev22" },
