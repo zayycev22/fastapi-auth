@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fastapi_auth"
+dynamic = ['version']
+authors = [
+    { name = "zayycev22" },
+]
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "email-validator >= 2.0.0",
+    "typing_extensions",
+    "pyjwt[crypto] >= 2.8.0",
+    "fastapi >= 0.110.0",
+    "bcrypt >= 4.1.2",
+    "passlib >= 1.7.4",
+    "pydantic >= 2.6.3",
+]
+
+description = "Authentication library for FastAPI for fast migration from Django/DRF. Serializers, signals, permissions, pagination and filters included."
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+sqlalchemy = [
+    "fastapi_auth_sqlalchemy_models >=0.0.1",
+]
+tortoise = [
+    "fastapi_auth_tortoise_models >=0.0.1",
+]
+
+[project.scripts]
+fastapi_auth = "fastapi_auth.__main__:main"
