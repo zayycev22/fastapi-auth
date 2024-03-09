@@ -14,7 +14,7 @@ class BaseSerializer(ABC):
         dynamic_model_fields = {}
         for field_name, field_type in annotations.items():
             dynamic_model_fields[field_name] = (field_type, ...)
-        model: Type[BaseModel] = create_model(f"{cls.__name__.split(".")[-1]}Model", **dynamic_model_fields,
+        model: Type[BaseModel] = create_model(f"{cls.__name__.split('.')[-1]}Model", **dynamic_model_fields,
                                               model_config=ConfigDict(arbitrary_types_allowed=True))
         if many:
             return List[model]
