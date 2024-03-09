@@ -20,8 +20,8 @@ jobs:
         pip install hatch
     - name: Build and publish on PyPI
       env:
-        HATCH_INDEX_USER: ${{ secrets.TORTOISE_AUTH_LOGIN }}
-        HATCH_INDEX_AUTH: ${{ secrets.TORTOISE_AUTH_PASSWORD }}
+        HATCH_INDEX_USER: ${{ secrets.FASTAPI_AUTH_LOGIN }}
+        HATCH_INDEX_AUTH: ${{ secrets.FASTAPI_AUTH_PASSWORD }}
       run: |
         hatch build
         hatch publish
