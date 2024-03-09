@@ -1,4 +1,4 @@
-name: Build tortoise_models
+name: Build fastapi_auth
 
 on: [push, pull_request]
 
