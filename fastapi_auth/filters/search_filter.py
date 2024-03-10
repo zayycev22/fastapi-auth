@@ -1,6 +1,6 @@
 from typing import Set, Type, Optional, Sequence
 from pydantic import BaseModel, Field, create_model
-from starlette.requests import Request
+from fastapi import Request
 from fastapi_auth.filters.base import BaseFilterBackend
 
 

@@ -1,6 +1,6 @@
 from typing import Sequence, Any, Type, Optional
 from pydantic import BaseModel, Field, create_model
-from starlette.requests import Request
+from fastapi import Request
 from fastapi_auth.filters.base import BaseFilterBackend
 
 
@@ -40,4 +40,4 @@ class OrderingFilter(BaseFilterBackend):
         request_schema = {
             cls.order_query_param: (Optional[str], Field(default=None)),
         }
-        return create_model(f"{cls.__name__.split(".")[-1]}", **request_schema)
+        return create_model(f"{cls.__name__.split('.')[-1]}", **request_schema)

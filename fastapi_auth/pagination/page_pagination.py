@@ -52,7 +52,7 @@ class PageNumberPagination(BasePagination):
                 default=f"'http://api.example.org/accounts/?{cls.page_query_param}=2'")),
             'results': (user_schema.response_schema(many=True), ...)
         }
-        return create_model(f"{user_schema.__name__.split(".")[-1]}Pagination", **pagination_schema,
+        return create_model(f"{user_schema.__name__.split('.')[-1]}Pagination", **pagination_schema,
                             model_config=ConfigDict(arbitrary_types_allowed=True))
 
     @classmethod
@@ -61,7 +61,7 @@ class PageNumberPagination(BasePagination):
             cls.page_query_param: (Optional[int], Field(default=None)),
             cls.page_size_query_param: (Optional[int], Field(default=None))
         }
-        return create_model(f"{cls.__name__.split(".")[-1]}", **request_schema)
+        return create_model(f"{cls.__name__.split('.')[-1]}", **request_schema)
 
     def get_page_number(self) -> int:
         try:
