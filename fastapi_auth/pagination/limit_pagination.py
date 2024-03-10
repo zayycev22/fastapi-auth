@@ -47,7 +47,7 @@ class LimitOffsetPagination(BasePagination):
                 default=f"'http://api.example.org/accounts/?{cls.offset_query_param}=200&{cls.limit_query_param}=100'")),
             'results': (user_schema.response_schema(many=True), ...)
         }
-        return create_model(f"{user_schema.__name__.split(".")[-1]}Pagination", **pagination_schema,
+        return create_model(f"{user_schema.__name__.split('.')[-1]}Pagination", **pagination_schema,
                             model_config=ConfigDict(arbitrary_types_allowed=True))
 
     @classmethod
@@ -56,7 +56,7 @@ class LimitOffsetPagination(BasePagination):
             cls.offset_query_param: (Optional[int], Field(default=None)),
             cls.limit_query_param: (Optional[int], Field(default=None))
         }
-        return create_model(f"{cls.__name__.split(".")[-1]}", **request_schema)
+        return create_model(f"{cls.__name__.split('.')[-1]}", **request_schema)
 
     @staticmethod
     def get_count(queryset: list[object]) -> int:
