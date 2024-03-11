@@ -5,6 +5,6 @@ try:
     __all__ = ['TokenRepository', 'UserRepository', 'EmailUser', 'BaseUser', 'User', 'Token', 'ExModel']
 
 except ImportError as error:
-    if error == "No module named 'fastapi_auth_sqlalchemy_models'":
+    if "No module named" in error:
         error = "No module named 'fastapi_auth_sqlalchemy_models', run pip install fastapi_auth_sqlalchemy_models"
     raise ImportError(error)
