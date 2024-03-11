@@ -47,8 +47,14 @@ sqlalchemy = [
     "fastapi_auth_sqlalchemy_models >=0.0.1",
 ]
 tortoise = [
-    "fastapi_auth_tortoise_models >=0.0.1",
+    "fastapi_auth_tortoise_models >=0.0.3",
 ]
 
 [project.scripts]
 fastapi_auth = "fastapi_auth.__main__:main"
+
+[tool.hatch.build.targets.sdist]
+strict-naming = false
+
+[tool.hatch.build.targets.wheel]
+strict-naming = false
