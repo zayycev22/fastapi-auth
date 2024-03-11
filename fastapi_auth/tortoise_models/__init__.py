@@ -5,6 +5,6 @@ try:
     __all__ = ['TokenRepository', 'UserRepository', 'EmailUser', 'BaseUser', 'User', 'Token', 'ExModel']
 
 except ImportError as error:
-    if "No module named" in error:
+    if "No module named" in str(error):
         error = "No module named 'fastapi_auth_tortoise_models', run pip install fastapi_auth_tortoise_models"
     raise ImportError(error)
