@@ -52,9 +52,3 @@ tortoise = [
 
 [project.scripts]
 fastapi_auth = "fastapi_auth.__main__:main"
-
-[tool.hatch.build.targets.sdist]
-strict-naming = false
-
-[tool.hatch.build.targets.wheel]
-strict-naming = false
