@@ -43,7 +43,7 @@ dependencies = [
 
 description = "Authentication library for FastAPI for fast migration from Django/DRF. Serializers, signals, permissions, pagination and filters included."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [project.optional-dependencies]
 sqlalchemy = [
