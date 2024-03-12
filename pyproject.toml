@@ -25,6 +25,8 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Framework :: FastAPI",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
@@ -40,7 +42,8 @@ dependencies = [
 ]
 
 description = "Authentication library for FastAPI for fast migration from Django/DRF. Serializers, signals, permissions, pagination and filters included."
-requires-python = ">=3.10"
+readme = "README.md"
+requires-python = ">=3.9"
 
 [project.optional-dependencies]
 sqlalchemy = [
@@ -52,3 +55,6 @@ tortoise = [
 
 [project.scripts]
 fastapi_auth = "fastapi_auth.__main__:main"
+
+[project.urls]
+Source = "https://github.com/zayycev22/fastapi-auth"
