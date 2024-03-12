@@ -1,3 +1,4 @@
+import logging
 import secrets
 from typing import Union
 import warnings
@@ -17,6 +18,7 @@ RANDOM_STRING_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234
 UNUSABLE_PASSWORD_SUFFIX_LENGTH = (
     22  # number of random chars to add after UNUSABLE_PASSWORD_PREFIX
 )
+logging.getLogger('passlib').setLevel(logging.ERROR)
 
 
 class Hasher:
