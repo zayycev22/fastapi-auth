@@ -32,4 +32,4 @@ class SearchFilter(BaseFilterBackend):
         request_schema = {
             cls.search_param: (Optional[str], Field(default=None)),
         }
-        return create_model(f"{cls.__name__.split(".")[-1]}", **request_schema)
+        return create_model(f"{cls.__name__.split('.')[-1]}", **request_schema)
