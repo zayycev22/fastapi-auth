@@ -98,7 +98,7 @@ class Paginator:
         return Page(*args, **kwargs)
 
     @cached_property
-    def count(self):
+    def count(self) -> int:
         """Return the total number of objects, across all pages."""
         c = getattr(self.object_list, "count", None)
         if callable(c) and not inspect.isbuiltin(c) and method_has_no_args(c):
@@ -106,7 +106,7 @@ class Paginator:
         return len(self.object_list)
 
     @cached_property
-    def num_pages(self):
+    def num_pages(self) -> int:
         """Return the total number of pages."""
         if self.count == 0 and not self.allow_empty_first_page:
             return 0
@@ -114,7 +114,7 @@ class Paginator:
         return ceil(hits / self.per_page)
 
     @property
-    def page_range(self):
+    def page_range(self) -> range:
         """
         Return a 1-based range of pages for iterating through within
         a template for loop.
@@ -140,7 +140,7 @@ class Paginator:
                 stacklevel=3,
             )
 
-    def get_elided_page_range(self, number=1, *, on_each_side=3, on_ends=2):
+    def get_elided_page_range(self, number=1, *, on_each_side=3, on_ends=2) -> range:
         """
         Return a 1-based range of pages with some values elided.
 
@@ -194,22 +194,22 @@ class Page(collections.abc.Sequence):
         # it won't be a database hit per __getitem__.
         return self.object_list[index]
 
-    def has_next(self):
+    def has_next(self) -> bool:
         return self.number < self.paginator.num_pages
 
-    def has_previous(self):
+    def has_previous(self) -> bool:
         return self.number > 1
 
-    def has_other_pages(self):
+    def has_other_pages(self) -> bool:
         return self.has_previous() or self.has_next()
 
-    def next_page_number(self):
+    def next_page_number(self) -> int:
         return self.paginator.validate_number(self.number + 1)
 
-    def previous_page_number(self):
+    def previous_page_number(self) -> int:
         return self.paginator.validate_number(self.number - 1)
 
-    def start_index(self):
+    def start_index(self) -> int:
         """
         Return the 1-based index of the first object on this page,
         relative to total objects in the paginator.
@@ -219,7 +219,7 @@ class Page(collections.abc.Sequence):
             return 0
         return (self.paginator.per_page * (self.number - 1)) + 1
 
-    def end_index(self):
+    def end_index(self) -> int:
         """
         Return the 1-based index of the last object on this page,
         relative to total objects found (hits).

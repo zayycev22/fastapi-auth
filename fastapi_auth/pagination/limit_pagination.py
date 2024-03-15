@@ -2,7 +2,7 @@ from collections import OrderedDict
 from fastapi import Request
 from fastapi_auth.pagination.base import BasePagination
 from fastapi_auth.serializers.base import BaseSerializer
-from typing import Type, Optional
+from typing import Type, Optional, Sequence
 from pydantic import create_model, BaseModel, ConfigDict, Field
 from fastapi_auth.utils import replace_query_param, remove_query_param
 
@@ -20,7 +20,7 @@ class LimitOffsetPagination(BasePagination):
     offset_query_param = "offset"
     limit_query_param = "limit"
 
-    def _paginate_queryset(self, instances: list[object]) -> list[object]:
+    def _paginate_queryset(self, instances: Sequence[object]) -> Sequence[object]:
         self.count = self.get_count(instances)
         self.limit = self._get_limit()
         self.offset = self._get_offset()
@@ -59,7 +59,7 @@ class LimitOffsetPagination(BasePagination):
         return create_model(f"{cls.__name__.split('.')[-1]}", **request_schema)
 
     @staticmethod
-    def get_count(queryset: list[object]) -> int:
+    def get_count(queryset: Sequence[object]) -> int:
         """
         Determine an object count, supporting regular lists.
         """

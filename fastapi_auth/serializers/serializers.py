@@ -38,7 +38,7 @@ class Serializer(BaseSerializer):
                 try:
                     data[key] = instance.__dict__[key]
                 except KeyError:
-                    raise ValidationError(f"Check key {key}")
+                    raise ValidationError(f"Check field {key}")
         return data
 
     async def _parse_many_instances(self, instances: List[object]) -> List[dict]:
