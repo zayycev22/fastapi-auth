@@ -10,22 +10,32 @@ class SearchFilter(BaseFilterBackend):
     def __init__(self, *search_fields: str):
         self.search_fields = search_fields
 
-    def filter_queryset(self, request: Request, data: Sequence[object]) -> Sequence[object]:
+    async def filter_queryset(self, request: Request, data: Sequence[object]) -> Sequence[object]:
         param = request.query_params.get(self.search_param)
         queryset = set()
         if param is not None:
             for item in data:
-                self._inspect_item(item, param, queryset)
+                await self._inspect_item(item, param, queryset)
             return list(queryset)
         return data
 
-    def _inspect_item(self, item: object, param: str, queryset: Set) -> None:
+    async def _inspect_item(self, item: object, param: str, queryset: Set) -> None:
         for search_field in self.search_fields:
-            if hasattr(item, search_field):
-                if param in str(getattr(item, search_field)).lower().strip():
-                    queryset.add(item)
+            if "__" in search_field:
+                search_field1, sub_item = await self._get_instance(search_field.split("__"), item)
+                if sub_item is None:
+                    continue
+                self._check_item(item, search_field1, queryset, param, sub_item)
             else:
-                raise AttributeError(f"No such attribute {search_field}")
+                self._check_item(item, search_field, queryset, param)
+
+    def _check_item(self, item: object, search_field: str, queryset: Set, param: str, sub_item: object = None):
+        obj = sub_item if sub_item is not None else item
+        if hasattr(obj, search_field):
+            if param in str(getattr(obj, search_field, "")).lower().strip():
+                queryset.add(item)
+        else:
+            raise AttributeError(f"{obj} has no attribute {search_field}")
 
     @classmethod
     def request_schema(cls) -> Type[BaseModel]:

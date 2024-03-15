@@ -22,6 +22,7 @@ authors = [
     { name = "zayycev22" },
 ]
 classifiers = [
+    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -50,7 +51,7 @@ sqlalchemy = [
     "fastapi_auth_sqlalchemy_models >=0.0.1",
 ]
 tortoise = [
-    "fastapi_auth_tortoise_models >=0.0.3",
+    "fastapi_auth_tortoise_models >=0.0.5",
 ]
 
 [project.scripts]
