@@ -22,7 +22,6 @@ authors = [
     { name = "zayycev22" },
 ]
 classifiers = [
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -44,11 +43,11 @@ dependencies = [
 
 description = "Authentication library for FastAPI for fast migration from Django/DRF. Serializers, signals, permissions, pagination and filters included."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [project.optional-dependencies]
 sqlalchemy = [
-    "fastapi_auth_sqlalchemy_models >=0.0.1",
+    "fastapi_auth_sqlalchemy_models >=0.0.2",
 ]
 tortoise = [
     "fastapi_auth_tortoise_models >=0.0.5",
