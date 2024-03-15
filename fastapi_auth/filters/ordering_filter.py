@@ -29,8 +29,7 @@ class OrderingFilter(BaseFilterBackend):
         return new_param
 
     def _order_queryset(self, param: str, data: Sequence[Any]) -> Sequence[Any]:
-        if not hasattr(data[0], self._prepare_param(param)):
-            raise ValueError(f"{data[0]} has no attribute {self._prepare_param(param)}")
+        self._check_queryset(data, self._prepare_param(param))
         if param.startswith("-"):
             return sorted(data, key=lambda x: getattr(x, self._prepare_param(param)), reverse=True)
         return sorted(data, key=lambda x: getattr(x, self._prepare_param(param)))
@@ -41,3 +40,8 @@ class OrderingFilter(BaseFilterBackend):
             cls.order_query_param: (Optional[str], Field(default=None)),
         }
         return create_model(f"{cls.__name__.split('.')[-1]}", **request_schema)
+
+    def _check_queryset(self, data: Sequence[Any], param: str) -> None:
+        for d in data:
+            if not hasattr(d, param):
+                raise AttributeError(f"{data[0]} has no attribute {self._prepare_param(param)}")
