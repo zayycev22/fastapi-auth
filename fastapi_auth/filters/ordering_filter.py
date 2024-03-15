@@ -11,7 +11,7 @@ class OrderingFilter(BaseFilterBackend):
     def __init__(self, *ordering_fields):
         self.ordering_fields = ordering_fields
 
-    def filter_queryset(self, request: Request, data: Sequence[Any]) -> Sequence[Any]:
+    async def filter_queryset(self, request: Request, data: Sequence[Any]) -> Sequence[Any]:
         if len(data) == 0:
             return data
         param = request.query_params.get(self.order_query_param)
@@ -30,7 +30,7 @@ class OrderingFilter(BaseFilterBackend):
 
     def _order_queryset(self, param: str, data: Sequence[Any]) -> Sequence[Any]:
         if not hasattr(data[0], self._prepare_param(param)):
-            raise ValueError(f"Invalid parameter {param}")
+            raise ValueError(f"{data[0]} has no attribute {self._prepare_param(param)}")
         if param.startswith("-"):
             return sorted(data, key=lambda x: getattr(x, self._prepare_param(param)), reverse=True)
         return sorted(data, key=lambda x: getattr(x, self._prepare_param(param)))
