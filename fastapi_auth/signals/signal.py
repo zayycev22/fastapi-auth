@@ -20,12 +20,28 @@ class Signal:
 
         return wrapper
 
+    def before_save(self, model: Type):
+        def wrapper(receiver: Awaitable):
+            if model not in self._before_create.keys():
+                self._before_create[model] = []
+            self._before_create[model].append(receiver)
+            return receiver
+
+        return wrapper
+
     async def emit_after_save(self, instance: Any, created: bool = False, **kwargs) -> None:
         instance_type = type(instance)
         for signal in self._signals:
             if instance_type in signal._after_create:
                 for receiver in signal._after_create[instance_type]:
                     await receiver(instance, created, **prepare_kwargs(receiver, kwargs))
+
+    async def emit_before_save(self, instance: Any, **kwargs) -> None:
+        instance_type = type(instance)
+        for signal in self._signals:
+            if instance_type in signal._before_create:
+                for receiver in signal._before_create[instance_type]:
+                    await receiver(instance, **prepare_kwargs(receiver, kwargs))
 
 
 main_signal = Signal()
