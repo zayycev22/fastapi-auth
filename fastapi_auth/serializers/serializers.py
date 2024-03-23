@@ -61,9 +61,9 @@ class Serializer(BaseSerializer):
 
     async def _check_type(self, annotation: type, method_field: Any) -> tuple[bool, bool]:
         try:
-            return issubclass(annotation, BaseModel), isinstance(method_field, list)
+            return issubclass(annotation, BaseModel), isinstance(method_field, Sequence)
         except TypeError:
-            return issubclass(annotation.__args__[0], BaseModel), isinstance(method_field, list)
+            return issubclass(annotation.__args__[0], BaseModel), isinstance(method_field, Sequence)
 
     def _get_serializer(self, key: str) -> base_serializer:
         return getattr(self, key)
