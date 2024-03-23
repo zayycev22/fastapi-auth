@@ -1,5 +1,5 @@
 import inspect
-from typing import Union, List, Sequence
+from typing import Union, List, Sequence, Any
 from pydantic import BaseModel
 from fastapi_auth.exceptions import ValidationError
 from fastapi_auth.serializers.base import BaseSerializer, base_serializer
@@ -35,7 +35,10 @@ class Serializer(BaseSerializer):
         for key in fields:
             if key in parsed_methods:
                 method_field = await parsed_methods[key](instance)
-                is_base_model, is_list = await self._check_type(fields[key])
+                if method_field is None:
+                    data[key] = None
+                    continue
+                is_base_model, is_list = await self._check_type(fields[key], method_field)
                 if is_base_model:
                     serializer = self._get_serializer(key)
                     d = await serializer(instance=method_field, many=is_list).data
@@ -44,6 +47,7 @@ class Serializer(BaseSerializer):
                     data[key] = method_field
             else:
                 try:
+                    print(instance)
                     data[key] = instance.__dict__[key]
                 except KeyError:
                     raise ValidationError(f"Check field {key}")
@@ -56,11 +60,11 @@ class Serializer(BaseSerializer):
             data.append(d)
         return data
 
-    async def _check_type(self, annotation: type) -> tuple[bool, bool]:
+    async def _check_type(self, annotation: type, method_field: Any) -> tuple[bool, bool]:
         try:
-            return issubclass(annotation, BaseModel), hasattr(annotation, "__iter__")
+            return issubclass(annotation, BaseModel), isinstance(method_field, list)
         except TypeError:
-            return issubclass(annotation.__args__[0], BaseModel), hasattr(annotation, "__iter__")
+            return issubclass(annotation.__args__[0], BaseModel), isinstance(method_field, list)
 
     def _get_serializer(self, key: str) -> base_serializer:
         return getattr(self, key)
