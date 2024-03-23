@@ -1,8 +1,5 @@
-import inspect
-from typing import List, Type
-from pydantic import BaseModel, create_model, ConfigDict
+from typing import Sequence
 from typing_extensions import Union
-from fastapi_auth.exceptions import ValidationError
 from fastapi_auth.serializers import Serializer
 
 
@@ -10,35 +7,9 @@ class ModelSerializer(Serializer):
     """
     ModelSerializer only for tortoise models
     """
-    def __init__(self, instance: Union[object, List[object]], many: bool = False):
+
+    def __init__(self, instance: Union[object, Sequence[object]], many: bool = False):
         super(ModelSerializer, self).__init__(instance, many)
-
-    async def _parse_single_instance(self, instance: object) -> dict:
-        data = {}
-        fields = self._get_annotations()
-        methods = inspect.getmembers(self, predicate=inspect.iscoroutinefunction)
-        parsed_methods = await self._parse_methods(methods, fields)
-        for key in fields:
-            if key in parsed_methods:
-                data[key] = await parsed_methods[key](instance)
-            else:
-                try:
-                    data[key] = instance.__dict__[key]
-                except KeyError:
-                    raise ValidationError(f"Check key {key}")
-        return data
-
-    @classmethod
-    def response_schema(cls, many: bool = False) -> Union[Type[BaseModel], Type[List[Type[BaseModel]]]]:
-        model_annotations = cls._get_annotations()
-        dynamic_model_fields = {}
-        for field_name, field_type in model_annotations.items():
-            dynamic_model_fields[field_name] = (field_type, ...)
-        model: Type[BaseModel] = create_model(f"{cls.__name__.split('.')[-1]}Model", **dynamic_model_fields,
-                                              model_config=ConfigDict(arbitrary_types_allowed=True))
-        if many:
-            return List[model]
-        return model
 
     @classmethod
     def _get_annotations(cls):

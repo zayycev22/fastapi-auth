@@ -10,7 +10,7 @@ class BaseSerializer(ABC):
 
     @classmethod
     def response_schema(cls, many: bool = False) -> Union[Type[BaseModel], Type[List[Type[BaseModel]]]]:
-        annotations = cls.__annotations__
+        annotations = cls._get_annotations()
         dynamic_model_fields = {}
         for field_name, field_type in annotations.items():
             dynamic_model_fields[field_name] = (field_type, ...)
@@ -38,6 +38,10 @@ class BaseSerializer(ABC):
 
     @abstractmethod
     async def _parse_many_instances(self, instances: List[object]) -> List[dict]:
+        raise NotImplementedError
+
+    @classmethod
+    def _get_annotations(cls):
         raise NotImplementedError
 
 
