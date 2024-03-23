@@ -47,7 +47,6 @@ class Serializer(BaseSerializer):
                     data[key] = method_field
             else:
                 try:
-                    print(instance)
                     data[key] = instance.__dict__[key]
                 except KeyError:
                     raise ValidationError(f"Check field {key}")
