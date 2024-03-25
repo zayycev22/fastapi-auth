@@ -1,6 +1,7 @@
 from typing import Sequence
 from typing_extensions import Union
 from fastapi_auth.serializers import Serializer
+from typing import Optional
 
 
 class ModelSerializer(Serializer):
@@ -34,7 +35,10 @@ class ModelSerializer(Serializer):
         annotations = cls.__annotations__
         for name, field in cls.Meta.model._meta.fields_map.items():
             if name not in annotations:
-                annotations[name]: field.field_type
+                if field.null:
+                    annotations[name] = Optional[field.field_type]
+                else:
+                    annotations[name] = field.field_type
         keys = [key for key, value in annotations.items() if value is None]
         class_annotations = cls.__annotations__
         for key in keys:
