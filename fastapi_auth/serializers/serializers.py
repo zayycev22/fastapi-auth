@@ -1,4 +1,5 @@
 import inspect
+import warnings
 from typing import Union, List, Sequence, Any
 from pydantic import BaseModel
 from fastapi_auth.exceptions import ValidationError
@@ -28,6 +29,7 @@ class Serializer(BaseSerializer):
         return data
 
     async def _parse_single_instance(self, instance: object) -> dict:
+        warnings.filterwarnings("ignore")
         data = {}
         fields = self._get_annotations()
         methods = inspect.getmembers(self, predicate=inspect.iscoroutinefunction)
