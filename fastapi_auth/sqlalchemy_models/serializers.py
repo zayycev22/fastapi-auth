@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Optional
 from sqlalchemy.orm import class_mapper, Relationship
 from typing_extensions import Union
 from fastapi_auth.serializers import Serializer
@@ -32,8 +32,26 @@ class ModelSerializer(Serializer):
 
         fields = cls.Meta.fields
         mapper = class_mapper(cls.Meta.model)
-        annotations = {prop.columns[0].description: prop.columns[0].type.python_type for prop in
-                       mapper.iterate_properties if not isinstance(prop, Relationship)}
+        annotations = cls.__annotations__
+        for prop in mapper.iterate_properties:
+            if prop.key not in annotations:
+                if not isinstance(prop, Relationship):
+                    if fields != "__all__" and prop.key in fields:
+                        try:
+                            if prop.columns[0].expression.nullable:
+                                annotations[prop.columns[0].description] = Optional[prop.columns[0].type.python_type]
+                            else:
+                                annotations[prop.columns[0].description] = prop.columns[0].type.python_type
+                        except NotImplementedError:
+                            raise TypeError(f"Unknown type {prop.key}")
+                    else:
+                        try:
+                            if prop.columns[0].expression.nullable:
+                                annotations[prop.columns[0].description] = Optional[prop.columns[0].type.python_type]
+                            else:
+                                annotations[prop.columns[0].description] = prop.columns[0].type.python_type
+                        except NotImplementedError:
+                            raise TypeError(f"Unknown type {prop.key}")
         class_annotations = cls.__annotations__
         if fields == "__all__":
             return annotations | class_annotations

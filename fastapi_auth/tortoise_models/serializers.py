@@ -31,7 +31,10 @@ class ModelSerializer(Serializer):
 
         fields = cls.Meta.fields
 
-        annotations = {name: field.field_type for name, field in cls.Meta.model._meta.fields_map.items()}
+        annotations = cls.__annotations__
+        for name, field in cls.Meta.model._meta.fields_map.items():
+            if name not in annotations:
+                annotations[name]: field.field_type
         keys = [key for key, value in annotations.items() if value is None]
         class_annotations = cls.__annotations__
         for key in keys:
