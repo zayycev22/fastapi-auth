@@ -2,7 +2,7 @@
 [![Downloads](https://static.pepy.tech/badge/auth_fastapi)](https://pepy.tech/project/auth_fastapi)
 
 # FastAPI-Auth
-
+![FastAPI-Auth](logo.png)
 FastAPI-Auth is an authentication library built upon the principles of Django and fastapi-users frameworks, designed for
 seamless migration from Django to FastAPI.
 
