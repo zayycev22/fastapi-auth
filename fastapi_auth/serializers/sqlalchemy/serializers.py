@@ -36,14 +36,15 @@ class ModelSerializer(Serializer):
         for prop in mapper.iterate_properties:
             if prop.key not in annotations:
                 if not isinstance(prop, Relationship):
-                    if fields != "__all__" and prop.key in fields:
-                        try:
-                            if prop.columns[0].expression.nullable:
-                                annotations[prop.columns[0].description] = Optional[prop.columns[0].type.python_type]
-                            else:
-                                annotations[prop.columns[0].description] = prop.columns[0].type.python_type
-                        except NotImplementedError:
-                            raise TypeError(f"Unknown type {prop.key}")
+                    if fields != "__all__":
+                        if prop.key in fields:
+                            try:
+                                if prop.columns[0].expression.nullable:
+                                    annotations[prop.columns[0].description] = Optional[prop.columns[0].type.python_type]
+                                else:
+                                    annotations[prop.columns[0].description] = prop.columns[0].type.python_type
+                            except NotImplementedError:
+                                raise TypeError(f"Unknown type {prop.key}")
                     else:
                         try:
                             if prop.columns[0].expression.nullable:
