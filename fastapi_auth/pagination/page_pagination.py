@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import Type, Optional
+from typing import Type, Optional, Sequence
 from pydantic import BaseModel, Field, create_model, ConfigDict
 from fastapi_auth.pagination.base import BasePagination
 from fastapi_auth.serializers.base import BaseSerializer
@@ -20,7 +20,7 @@ class PageNumberPagination(BasePagination):
         self._serializer = serializer
         self.page = None
 
-    def _paginate_queryset(self, instances: list[object]) -> list[object]:
+    def _paginate_queryset(self, instances: Sequence[object]) -> list[object]:
         page_number = self.get_page_number()
         page_size = self.get_page_size()
         paginator = Paginator(instances, page_size, allow_empty_first_page=True)

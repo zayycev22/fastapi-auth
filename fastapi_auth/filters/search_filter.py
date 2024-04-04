@@ -32,7 +32,7 @@ class SearchFilter(BaseFilterBackend):
     def _check_item(self, item: object, search_field: str, queryset: Set, param: str, sub_item: object = None):
         obj = sub_item if sub_item is not None else item
         if hasattr(obj, search_field):
-            if param in str(getattr(obj, search_field, "")).lower().strip():
+            if param.lower() in str(getattr(obj, search_field, "")).lower().strip():
                 queryset.add(item)
         else:
             raise AttributeError(f"{obj} has no attribute {search_field}")

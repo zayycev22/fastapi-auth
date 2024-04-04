@@ -28,7 +28,7 @@ class LimitOffsetPagination(BasePagination):
             return []
         return instances[self.offset:self.offset + self.limit]
 
-    async def get_paginated_response(self, instances) -> OrderedDict:
+    async def get_paginated_response(self, instances: Sequence[object]) -> OrderedDict:
         data = self._paginate_queryset(instances)
         return OrderedDict([
             ('count', self.count),
