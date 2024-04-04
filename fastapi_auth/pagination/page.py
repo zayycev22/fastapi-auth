@@ -3,7 +3,7 @@ import inspect
 import warnings
 from functools import cached_property
 from math import ceil
-from typing import Optional
+from typing import Optional, Sequence
 from fastapi_auth.utils import method_has_no_args
 
 
@@ -31,7 +31,7 @@ class Paginator:
 
     def __init__(
             self,
-            object_list: list,
+            object_list: Sequence,
             per_page,
             orphans=0,
             allow_empty_first_page: bool = True,
