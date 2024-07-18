@@ -33,7 +33,7 @@ class PageNumberPagination(BasePagination):
             raise HTTPException(status_code=404, detail=msg)
         return list(self.page)
 
-    async def get_paginated_response(self, instances: list[object]) -> OrderedDict:
+    async def get_paginated_response(self, instances: Sequence[object]) -> OrderedDict:
         data = self._paginate_queryset(instances)
         return OrderedDict([
             ('count', self.page.paginator.count),
