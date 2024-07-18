@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Generic, Optional
+from typing import Generic, Optional, Union
 from fastapi_auth.hasher import Hasher
 from fastapi_auth.models import user_model
 from fastapi_auth.repositories.base import user_repository
@@ -28,5 +28,5 @@ class BaseBackend(ABC, Generic[user_model, user_repository]):
     async def get_user_by_token(self, token: str) -> Optional[user_model]:
         return await self.strategy.read_token(token)
 
-    async def get_token_by_user(self, user: user_model) -> str:
+    async def get_token_by_user(self, user: user_model) -> Union[str, tuple[str, str]]:
         return await self.strategy.get_token_by_user(user)
