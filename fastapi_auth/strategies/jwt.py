@@ -8,14 +8,16 @@ from fastapi_auth.strategies.base import Strategy, StrategyDestroyNotSupportedEr
 
 
 class JwtStrategy(Strategy[user_model, None]):
-    def __init__(self, user_repo: user_repository, lifetime_seconds: int = 3600, algorithm: str = "HS256"):
+    def __init__(self, secret_key: str, user_repo: user_repository, lifetime_seconds: int = 3600,
+                 algorithm: str = "HS256"):
         self.lifetime_seconds = lifetime_seconds
         self.algorithm = algorithm
         self.user_repo = user_repo
+        self.secret_key = secret_key
 
     async def read_token(self, token: Optional[str]) -> Optional[user_model]:
         try:
-            data = decode_jwt(token=token)
+            data = decode_jwt(secret=self.secret_key, token=token)
         except jwt.PyJWTError:
             return None
         else:
@@ -28,7 +30,7 @@ class JwtStrategy(Strategy[user_model, None]):
 
     async def get_token_by_user(self, user: user_model) -> str:
         data = {"id": user.id, "password": user.password}
-        return encode_jwt(data, lifetime_seconds=self.lifetime_seconds)
+        return encode_jwt(data, secret=self.secret_key, lifetime_seconds=self.lifetime_seconds)
 
     async def destroy_token(self, token: str, user: user_model) -> None:
         raise StrategyDestroyNotSupportedError("A JWT can't be invalidated: it's valid until it expires.")

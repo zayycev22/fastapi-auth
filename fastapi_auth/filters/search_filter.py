@@ -13,7 +13,7 @@ class SearchFilter(BaseFilterBackend):
     async def filter_queryset(self, request: Request, data: Sequence[object]) -> Sequence[object]:
         param = request.query_params.get(self.search_param)
         queryset = set()
-        if param is not None:
+        if param is not None and param != '':
             for item in data:
                 await self._inspect_item(item, param, queryset)
             return list(queryset)
@@ -43,3 +43,18 @@ class SearchFilter(BaseFilterBackend):
             cls.search_param: (Optional[str], Field(default=None)),
         }
         return create_model(f"{cls.__name__.split('.')[-1]}", **request_schema)
+
+
+class DictSearchFilter(SearchFilter):
+    async def _inspect_item(self, item: dict, param: str, queryset: Set) -> None:
+        for search_field in self.search_fields:
+            self._check_item(item, search_field, queryset, param)
+
+    def _check_item(self, item: dict, search_field: str, queryset: Set, param: str, sub_item: object = None):
+        obj = sub_item if sub_item is not None else item
+        try:
+            val = obj[search_field]
+            if param.lower().strip() in str(val).lower().strip():
+                queryset.add(obj)
+        except KeyError:
+            raise KeyError(f"Queryset has no key {search_field}")
