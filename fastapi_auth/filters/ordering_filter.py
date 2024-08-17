@@ -6,16 +6,16 @@ from fastapi_auth.filters.base import BaseFilterBackend
 
 class OrderingFilter(BaseFilterBackend):
     order_query_param = "ordering"
-    default_ordering = "id"
 
-    def __init__(self, *ordering_fields):
+    def __init__(self, *ordering_fields, default_ordering: str = 'id'):
+        self.default_ordering = default_ordering
         self.ordering_fields = ordering_fields
 
     async def filter_queryset(self, request: Request, data: Sequence[Any]) -> Sequence[Any]:
         if len(data) == 0:
             return data
         param = request.query_params.get(self.order_query_param)
-        if param is not None and self._prepare_param(param) in self.ordering_fields:
+        if param is not None and self._prepare_param(param) in self.ordering_fields and param != '':
             new_data = self._order_queryset(param.strip(), data)
         else:
             new_data = self._order_queryset(self.default_ordering, data)
